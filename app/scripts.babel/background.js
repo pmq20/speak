@@ -62,7 +62,7 @@ function MinqiPanSpeak(text, voice) {
     chrome.tts.speak(text,
         {
             'rate': getRateValue(),
-            'voiceName': voice,
+            'voiceName': voice.replace('-', ' '),
             'pitch': calcPitch(),
             'volume': calcVolume(),
             requiredEventTypes: ['word', 'error', 'start', 'end'],
