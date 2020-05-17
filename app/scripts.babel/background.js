@@ -11,7 +11,7 @@ chrome.commands.onCommand.addListener((command) => {
 // Listen for Messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.method == 'minqiPanSpeak') {
-        MinqiPanSpeak(request.text, request.voice, request.voice2);
+        MinqiPanSpeak(request.text, request.voice, request.text2, request.voice2);
     }
     if (request.method == 'speak') { //Message from Content Script
         var speak = true;
@@ -58,7 +58,7 @@ function StartSpeaking(info) {
         });
     }
 }
-function MinqiPanSpeak(text, voice, voice2) {
+function MinqiPanSpeak(text, voice, text2, voice2) {
     chrome.tts.speak(text,
         {
             'rate': getRateValue(),
@@ -68,8 +68,8 @@ function MinqiPanSpeak(text, voice, voice2) {
             requiredEventTypes: ['word', 'error', 'start', 'end'],
             desiredEventTypes: ['word', 'error', 'start', 'end'],
             onEvent: (event) => {
-                if (event.type == 'end' && voice2) {
-                    chrome.tts.speak(text,
+                if (event.type == 'end' && text2 && voice2) {
+                    chrome.tts.speak(text2,
                         {
                             'rate': getRateValue(),
                             'voiceName': voice2.replace('-', ' '),
