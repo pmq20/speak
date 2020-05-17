@@ -11,7 +11,7 @@ chrome.commands.onCommand.addListener((command) => {
 // Listen for Messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.method == 'minqiPanSpeak') {
-        MinqiPanSpeak(request.text, request.voice);
+        MinqiPanSpeak(request.text, request.voice, request.voice2);
     }
     if (request.method == 'speak') { //Message from Content Script
         var speak = true;
@@ -58,7 +58,7 @@ function StartSpeaking(info) {
         });
     }
 }
-function MinqiPanSpeak(text, voice) {
+function MinqiPanSpeak(text, voice, voice2) {
     chrome.tts.speak(text,
         {
             'rate': getRateValue(),
@@ -68,6 +68,27 @@ function MinqiPanSpeak(text, voice) {
             requiredEventTypes: ['word', 'error', 'start', 'end'],
             desiredEventTypes: ['word', 'error', 'start', 'end'],
             onEvent: (event) => {
+                if (event.type == 'end' && voice2) {
+                    chrome.tts.speak(text,
+                        {
+                            'rate': getRateValue(),
+                            'voiceName': voice2.replace('-', ' '),
+                            'pitch': calcPitch(),
+                            'volume': calcVolume(),
+                            requiredEventTypes: ['word', 'error', 'start', 'end'],
+                            desiredEventTypes: ['word', 'error', 'start', 'end'],
+                            onEvent: (event) => {
+                                console.log('Event ' + event.type + ' at position ' + event.charIndex);
+                                if (event.type == 'error') {
+                                    console.log('Error: ' + event.errorMessage);
+                                } else if (event.type == 'word') {
+                                    console.log('word event');
+                                }
+                            }
+                        }, () => {
+                            console.log('speak callbackk');
+                        });
+                }
                 console.log('Event ' + event.type + ' at position ' + event.charIndex);
                 if (event.type == 'error') {
                     console.log('Error: ' + event.errorMessage);
