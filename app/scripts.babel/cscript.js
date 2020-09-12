@@ -106,7 +106,7 @@ function ShowButton(x, y) {
     speakButton.style = `top:${y}px;left:${x}px;position:absolute;z-index: 9999;float:none`;
 }
 function HideButton() {
-    speakButton.style = 'visibility: hidden;';
+    speakButton.style = 'display: none;';
 }
 function CreateButtonElement() {
     speakButton = document.createElement('Button');
