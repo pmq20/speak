@@ -10,6 +10,9 @@ chrome.commands.onCommand.addListener((command) => {
 });
 // Listen for Messages
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.method == 'minqiPanKunren') {
+        MinqiPanKunren(request.text, request.voice);
+    }
     if (request.method == 'minqiPanSpeak') {
         MinqiPanSpeak(request.text, request.voice, request.text2, request.voice2);
     }
@@ -58,6 +61,28 @@ function StartSpeaking(info) {
         });
     }
 }
+
+function MinqiPanKunren(text, voice) {
+    window.MinqiPanKunrenInnerFunc = () => {
+        chrome.tts.speak(text,
+            {
+                'rate': getRateValue(),
+                'voiceName': voice.replace('-', ' '),
+                'pitch': calcPitch(),
+                'volume': calcVolume(),
+                requiredEventTypes: ['word', 'error', 'start', 'end'],
+                desiredEventTypes: ['word', 'error', 'start', 'end'],
+                onEvent: (event) => {
+                    if (event.type == 'end') {
+                        window.MinqiPanKunrenInnerFunc();
+                    }
+                }
+            }, () => {
+            });
+    };
+    window.MinqiPanKunrenInnerFunc();
+}
+
 function MinqiPanSpeak(text, voice, text2, voice2) {
     chrome.tts.speak(text,
         {

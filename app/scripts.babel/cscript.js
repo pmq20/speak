@@ -10,6 +10,9 @@ document.addEventListener('mousedown', (e) => {
     prevElmClicked = e.target || e.srcElement;
     prevMdownStamp = new Date();
 });
+document.addEventListener('minqiPanKunren', (e) => {
+    chrome.runtime.sendMessage(e.detail);
+});
 document.addEventListener('minqiPanSpeak', (e) => {
     chrome.runtime.sendMessage(e.detail);
 });
